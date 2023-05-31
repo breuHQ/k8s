@@ -21,6 +21,8 @@ spec:
     {{- toYaml .Values.topologyKeys | nindent 4 }}
   {{- end }}
   ports:
+  - name: {{ .Values.nats.nozl.portName }}
+    port: {{ .Values.nats.nozl.port }}
   {{- if .Values.websocket.enabled }}
   - name: websocket
     port: {{ .Values.websocket.port }}
