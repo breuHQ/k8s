@@ -304,6 +304,8 @@ spec:
         - containerPort: {{ .Values.nats.profiling.port }}
           name: profiling
         {{- end }}
+        - containerPort: {{ .Values.nats.nozl.port}}
+          name: {{ .Values.nats.nozl.portName }}
 
         command:
         - "nats-server"
