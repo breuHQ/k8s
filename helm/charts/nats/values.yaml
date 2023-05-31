@@ -34,6 +34,7 @@ nats:
     port: 6000
 
   # Toggle using health check probes to better detect failures.
+
   healthcheck:
     # /healthz health check endpoint was introduced in NATS Server 2.7.1
     # Attempt to detect /healthz support by inspecting if tag is >=2.7.1
@@ -48,8 +49,8 @@ nats:
     liveness:
       enabled: true
 
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
+      initialDelaySeconds: 30
+      timeoutSeconds: 20
       # NOTE: liveness check + terminationGracePeriodSeconds can introduce unnecessarily long outages
       # due to the coupling between liveness probe and terminationGracePeriodSeconds.
       # To avoid this, we make the periodSeconds of the liveness check to be about half the default
@@ -68,8 +69,10 @@ nats:
       failureThreshold: 3
 
       # Override the health check path
-      # httpGet:
-      #   path: /healthz?js-enabled=true
+      httpGet:
+        path: /api/healthz
+        port: 1323
+        scheme: HTTP
 
       # Only for Kubernetes +1.22 that have pod level probes enabled.
       # terminationGracePeriodSeconds: 5
@@ -79,31 +82,26 @@ nats:
     readiness:
       enabled: true
 
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
+      initialDelaySeconds: 30
+      timeoutSeconds: 20
       periodSeconds: 10
       successThreshold: 1
       failureThreshold: 3
 
       # Override the health check path
-      # httpGet:
-      #   path: /healthz?js-server-only=true
+      httpGet:
+        path: /api/healthz
+        port: 1323
+        scheme: HTTP
 
     # Enable startup checks to confirm server is ready for traffic.
     # This is recommended for JetStream deployments since in cluster mode
     # it will try to ensure that the server is ready to serve streams.
     startup:
-      enabled: true
-
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
-      periodSeconds: 10
-      successThreshold: 1
-      failureThreshold: 90
-
-      # Override the health check path
-      # httpGet:
-      #   path: /healthz
+      enabled: false
+      httpGet:
+        path: /healthz
+        port: 8222
 
   ## hostNetwork
   hostNetwork: false
